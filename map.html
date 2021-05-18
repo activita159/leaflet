@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #mapid {
+            height: 80vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mapid"></div>
+
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin="">
+    </script>
+
+    <script>
+        function successGPS(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            center = [lat, lng];
+            // 接著寫確認了座標後要執行的事
+        };
+
+        function errorGPS() {
+            window.alert('無法判斷您的所在位置，無法使用此功能。預設地點將為 台北市動物園');
+            // 接著寫使用者「封鎖」位置資訊請求後要執行的事
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successGPS, errorGPS);
+        } else {
+            window.alert('您的裝置不具備GPS，無法使用此功能');
+            // 接著寫使用者裝置不支援位置資訊時要執行的事
+        }
+
+
+        var mymap = L.map('mapid').setView([24.194, 120.54535], 15);
+//地圖樣式更換=============================================================================================
+        // var Stadia_AlidadeSmoothDark = L.tileLayer(
+        //     'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        //         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        //         maxZoom: 20,
+        //         id: 'mapbox/streets-v11',
+        //         tileSize: 512,
+        //         zoomOffset: -1,
+        //         accessToken: 'pk.eyJ1IjoiYWN0aXZpdGExNTkiLCJhIjoiY2tvcGRiZWlzMGJ1ODJ2a2hoamd0MGsxbyJ9.Kpk1ux9XXckK6NPE-qPhlw',
+        //         attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        //     }).addTo(mymap);
+
+
+        var Stadia_AlidadeSmoothDark = L.tileLayer(
+            'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+                maxZoom: 20,
+                attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(mymap);
+
+        // var  qq = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        //     maxZoom: 18,
+        //     id: 'mapbox/streets-v11',
+        //     tileSize: 512,
+        //     zoomOffset: -1,
+        //     accessToken: 'pk.eyJ1IjoiYWN0aXZpdGExNTkiLCJhIjoiY2tvcGRiZWlzMGJ1ODJ2a2hoamd0MGsxbyJ9.Kpk1ux9XXckK6NPE-qPhlw'
+        // })
+        // qq.addTo(mymap);
+//=============================================================================================================================
+
+        //marker樣式
+        const customIcon = L.icon({
+            iconUrl: './imgs/lovelyicon.png',
+            iconSize: [50, 50],
+        });
+        //點圖層  設定marker位置，並套用樣式        
+        var marker = L.marker([24.192564, 120.5450471], {
+            // draggable:true,  可拖曳圖標
+            // autoPan: true,
+            // autoPanPadding: [200, 200], 設定距離邊界200px時，平移地圖，平移量25px
+            // autoPanSpeed: 25,
+            icon: customIcon
+        }).addTo(mymap);
+        //圓圖層
+        var circle = L.circle([24.1891287, 120.548366], {
+            color: 'yellow',
+            fillColor: '#f03',
+            fillOpacity: 0.2,
+            radius: 300
+        }).addTo(mymap);
+
+        //面圖層，用好幾個點連線的圖層
+        // var polygon = L.polygon([
+        //     [51.509, -0.08],
+        //     [51.503, -0.06],
+        //     [51.51, -0.047]
+        // ]).addTo(mymap);
+
+        //綁定Popup ， openPopup():畫面開啟自動打開Popup
+        marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+        // circle.bindPopup("I am a circle.").openPopup();
+        // polygon.bindPopup("I am a polygon.");
+
+
+
+        //先建立物件，指定位置的顯示資訊，再秀出來，只有建立物件才能使用closePopup()
+        nukPopup = L.popup().setLatLng([24.19745, 120.5433075]).setContent("龍井火車站Yo")
+        mymap.openPopup(nukPopup)
+
+
+        //直接秀出要顯示的資訊及座標的Popup，沒有建立物件，不能使用closePopup()
+        // mymap.openPopup("龍井火車站", [24.19745, 120.5433075])
+
+
+        //手動加入ZoomControl至右上角
+        var zoomControl = L.control.zoom({
+            position: 'topright'
+        })
+        mymap.addControl(zoomControl);
+
+
+
+        var nuk = L.marker([24.202, 120.553], {
+            icon: customIcon
+        });
+        nuk.bindTooltip("<b>我在哪</b><br>我是誰"); //tooltip:跟Popup相似，但游標移過去才顯示
+        mymap.addLayer(nuk);
+    </script>
+
+
+
+
+
+    <script>
+//計算兩點直線距離====================================
+        // lng：經度
+        // lat：緯度
+        // 地球半徑：6378.137（千米）
+
+        // 一般地圖上顯示的坐標順序為，緯度在前（範圍-90 ~ 90），經度在後（範圍-180 ~ 180）
+
+
+        function getRad(d) {
+            var PI = Math.PI;
+            return d * PI / 180.0;
+        }
+
+        /**
+         * 根據經緯度計算兩點間距離
+         * @param lng1
+         * @param lat1
+         * @param lng2
+         * @param lat2
+         * @returns {number|*}
+         * @constructor
+         */
+        function CoolWPDistance(lng1, lat1, lng2, lat2) {
+            var f = getRad((lat1 + lat2) / 2);
+            var g = getRad((lat1 - lat2) / 2);
+            var l = getRad((lng1 - lng2) / 2);
+            var sg = Math.sin(g);
+            var sl = Math.sin(l);
+            var sf = Math.sin(f);
+            var s, c, w, r, d, h1, h2;
+            var a = 6378137.0; //The Radius of eath in meter.
+            var fl = 1 / 298.257;
+            sg = sg * sg;
+            sl = sl * sl;
+            sf = sf * sf;
+            s = sg * (1 - sl) + (1 - sf) * sl;
+            c = (1 - sg) * (1 - sl) + sf * sl;
+            w = Math.atan(Math.sqrt(s / c));
+            r = Math.sqrt(s * c) / w;
+            d = 2 * w * a;
+            h1 = (3 * r - 1) / 2 / c;
+            h2 = (3 * r + 1) / 2 / s;
+            s = d * (1 + fl * (h1 * sf * (1 - sg) - h2 * (1 - sf) * sg));
+            if (s >= 1000 && s <= 99000) {
+                var kilometer = s / 1000;
+                s = kilometer.toFixed(1) + 'km';
+            } else if (s > 99000) {
+                s = '>99km';
+            } else {
+                s = Math.round(s) + 'm';
+            }
+            // s = s/1000;
+            // s = s.toFixed(2);//指定小數點後的位數。
+            console.log(s);
+            // return s;
+        }
+
+
+        CoolWPDistance(120.5450471, 24.192564, 120.548366, 24.1891287);
+        // 一般地圖上顯示的坐標順序為，緯度在前（範圍-90 ~ 90），經度在後（範圍-180 ~ 180）
+
+//================================================================================
+    </script>
+
+
+</body>
+
+</html>
